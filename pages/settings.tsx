@@ -1,10 +1,13 @@
-import type { NextPage } from "next"
+import type { InferGetServerSidePropsType } from "next"
 import { Button, Heading, Stack, Text } from "@chakra-ui/react"
 import { FiBell } from "react-icons/fi"
 import Card from "../components/card"
-import NewChannel from "../components/settings/new-channel"
+import NewChannel, { ChannalProps } from "../components/settings/new-channel"
+import { Key, ReactChild, ReactFragment, ReactPortal } from "react"
 
-const Settngs: NextPage = () => {
+function Settngs({
+  data,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <div>
       <Heading>Settings</Heading>
@@ -14,7 +17,11 @@ const Settngs: NextPage = () => {
           title="Channels"
           description="Add or remove channels"
         >
-          <Text textAlign="center">No channels</Text>
+          {data.map(channel => (
+            <Text textAlign="center" key={channel.id}>
+              {channel.channel_Id}
+            </Text>
+          ))}
 
           <NewChannel />
         </Card>
@@ -24,3 +31,13 @@ const Settngs: NextPage = () => {
 }
 
 export default Settngs
+
+export const getServerSideProps = async () => {
+  const res = await fetch("http://localhost:3000/api/channels")
+  const data: ChannalProps[] = await res.json()
+  return {
+    props: {
+      data,
+    },
+  }
+}
