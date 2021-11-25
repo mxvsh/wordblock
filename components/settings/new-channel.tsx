@@ -10,13 +10,34 @@ import {
   ModalCloseButton,
   useDisclosure,
   Input,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react"
+import { Router } from "next/router"
+import { useState } from "react"
 
-type Props = {};
+export type ChannalProps = {
+  id: string | number
+  channel_Id: string
+}
 
 const NewChannel: React.FC = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [channel_Id, setchael_Id] = useState("")
+  // modal
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const submitData = async (e: React.SyntheticEvent) => {
+    e.preventDefault()
+    try {
+      const body = { channel_Id }
+      await fetch(`http://localhost:3000/api/channels/add`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
+      if (!channel_Id) return
+      setchael_Id("")
+    } catch (error) {
+      console.error(error)
+    }
+  }
   return (
     <>
       <Button size="sm" onClick={onOpen}>
@@ -29,20 +50,30 @@ const NewChannel: React.FC = () => {
             <ModalHeader>New Channel</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <Input placeholder="Enter Channel ID" />
+              <form onSubmit={submitData}>
+                <Input
+                  autoFocus
+                  onChange={e => setchael_Id(e.target.value)}
+                  type="text"
+                  value={channel_Id}
+                  placeholder="Enter Channel ID"
+                />
+              </form>
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
-                Close
+              <Button onClick={submitData} variant="blue">
+                Add
               </Button>
-              <Button variant="ghost">Secondary Action</Button>
+              <Button colorScheme="red" mr={3} onClick={onClose}>
+                Cancel
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default NewChannel;
+export default NewChannel

@@ -36,3 +36,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+# dev db
+prisma/dev.db
+prisma/migrations/*
