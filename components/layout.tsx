@@ -8,7 +8,7 @@ const Layout: React.FC = ({ children }) => {
 		<Box h='100vh' overflow='auto' bg='gray.100'>
 			<Header />
 
-			<Box maxW='6xl' m='0 auto'>
+			<Box maxW='3xl' m='0 auto'>
 				<Flex px={2} alignItems='flex-start' my={6}>
 					<Box w='64' bg='white' px={4} py={6} rounded='lg'>
 						<Sidebar />
