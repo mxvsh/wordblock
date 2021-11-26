@@ -1,6 +1,8 @@
+import { useRef, useState } from "react"
 import {
   Box,
   Button,
+  Input,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -9,35 +11,56 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  Input,
+  useToast,
 } from "@chakra-ui/react"
-import { Router } from "next/router"
-import { useState } from "react"
 
 export type ChannalProps = {
   id: string | number
-  channel_Id: string
+  channelId: string
+  title: string
+  members: number
 }
 
 const NewChannel: React.FC = () => {
-  const [channel_Id, setchael_Id] = useState("")
-  // modal
+  const [loading, setLoading] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const submitData = async (e: React.SyntheticEvent) => {
-    e.preventDefault()
-    try {
-      const body = { channel_Id }
-      await fetch(`http://localhost:3000/api/channels/add`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+  const toast = useToast()
+  const channelInputRef = useRef<HTMLInputElement>(null)
+
+  const AddChannel = async () => {
+    let channels: any = localStorage.getItem("channels")
+
+    channels = JSON.parse(channels || "{}")
+
+    const id = channelInputRef.current?.value
+    setLoading(true)
+    fetch(`/api/channel/info?id=${id}`)
+      .then(res => res.json())
+      .then(data => {
+        setLoading(false)
+        if (data.error) {
+          toast({
+            title: "Error",
+            description: data.error,
+            status: "error",
+            position: "bottom-right",
+          })
+          return
+        }
+
+        const { id, title } = data
+        toast({
+          title: "Success",
+          description: `${title} added`,
+          status: "success",
+          position: "bottom-right",
+        })
+        channels[id] = { ...data }
+        localStorage.setItem("channels", JSON.stringify(channels))
+        onClose()
       })
-      if (!channel_Id) return
-      setchael_Id("")
-    } catch (error) {
-      console.error(error)
-    }
   }
+
   return (
     <>
       <Button size="sm" onClick={onOpen}>
@@ -50,23 +73,17 @@ const NewChannel: React.FC = () => {
             <ModalHeader>New Channel</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <form onSubmit={submitData}>
-                <Input
-                  autoFocus
-                  onChange={e => setchael_Id(e.target.value)}
-                  type="text"
-                  value={channel_Id}
-                  placeholder="Enter Channel ID"
-                />
-              </form>
+              <Input
+                autoFocus
+                ref={channelInputRef}
+                type="text"
+                placeholder="Enter Channel ID"
+              />
             </ModalBody>
 
             <ModalFooter>
-              <Button onClick={submitData} variant="blue">
+              <Button isLoading={loading} onClick={AddChannel}>
                 Add
-              </Button>
-              <Button colorScheme="red" mr={3} onClick={onClose}>
-                Cancel
               </Button>
             </ModalFooter>
           </ModalContent>

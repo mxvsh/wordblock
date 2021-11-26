@@ -1,13 +1,34 @@
-import type { InferGetServerSidePropsType } from "next"
-import { Button, Heading, Stack, Text } from "@chakra-ui/react"
+import { useEffect, useMemo, useState } from "react"
+import {
+  Heading,
+  Stack,
+  Button,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+} from "@chakra-ui/react"
 import { FiBell } from "react-icons/fi"
+
+import { getChannels } from "../helpers/channels"
+
 import Card from "../components/card"
 import NewChannel, { ChannalProps } from "../components/settings/new-channel"
-import { Key, ReactChild, ReactFragment, ReactPortal } from "react"
 
-function Settngs({
-  data,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+type Props = {
+  channels: ChannalProps[]
+}
+
+const Settngs: React.FC<Props> = () => {
+  const [channels, setChannels] = useState({})
+  const channelKeys = useMemo(() => Object.keys(channels), [channels])
+
+  useEffect(() => {
+    setChannels(getChannels())
+  }, [])
+
   return (
     <div>
       <Heading>Settings</Heading>
@@ -17,27 +38,38 @@ function Settngs({
           title="Channels"
           description="Add or remove channels"
         >
-          {data.map(channel => (
-            <Text textAlign="center" key={channel.id}>
-              {channel.channel_Id}
-            </Text>
-          ))}
-
-          <NewChannel />
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>#</Th>
+                <Th>Title</Th>
+                <Th>ID</Th>
+                <Th>Action</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {channelKeys.map((id, idx) => {
+                const channel: any = channels[id]
+                return (
+                  <Tr>
+                    <Td>{idx + 1}</Td>
+                    <Td>{channel.title}</Td>
+                    <Td>{id}</Td>
+                    <Td>
+                      <Button size="xs" colorScheme="red">
+                        delete
+                      </Button>
+                    </Td>
+                  </Tr>
+                )
+              })}
+            </Tbody>
+          </Table>
         </Card>
+        <NewChannel />
       </Stack>
     </div>
   )
 }
 
 export default Settngs
-
-export const getServerSideProps = async () => {
-  const res = await fetch("http://localhost:3000/api/channels")
-  const data: ChannalProps[] = await res.json()
-  return {
-    props: {
-      data,
-    },
-  }
-}
