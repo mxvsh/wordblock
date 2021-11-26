@@ -14,6 +14,8 @@ out/
 
 # production
 /build
+app/
+dist/
 
 # misc
 .DS_Store
@@ -38,4 +40,4 @@ yarn-error.log*
 *.tsbuildinfo
 # dev db
 prisma/dev.db
-prisma/migrations/*
+prisma/migrations/* 
