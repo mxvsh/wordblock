@@ -1,29 +1,27 @@
+import { NextPage } from "next"
 import { useEffect, useMemo, useState } from "react"
 import {
   Heading,
   Stack,
   Button,
   Table,
+  TableCaption,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
 } from "@chakra-ui/react"
-import { FiBell } from "react-icons/fi"
 
-import { getChannels } from "../helpers/channels"
+import { FiBell } from "react-icons/fi"
+import { deleteChannel, getChannels } from "../helpers/channels"
 
 import Card from "../components/card"
-import NewChannel, { ChannalProps } from "../components/settings/new-channel"
+import NewChannel from "../components/settings/new-channel"
 
-type Props = {
-  channels: ChannalProps[]
-}
-
-const Settngs: React.FC<Props> = () => {
+const Settngs: NextPage = () => {
   const [channels, setChannels] = useState({})
-  const channelKeys = useMemo(() => Object.keys(channels), [channels])
+  const channelKeys = useMemo(() => Object.keys(channels || {}), [channels])
 
   useEffect(() => {
     setChannels(getChannels())
@@ -37,8 +35,12 @@ const Settngs: React.FC<Props> = () => {
           icon={<FiBell />}
           title="Channels"
           description="Add or remove channels"
+          extras={<NewChannel onAdd={() => setChannels(getChannels())} />}
         >
           <Table variant="simple">
+            {channelKeys.length === 0 && (
+              <TableCaption>No channels found</TableCaption>
+            )}
             <Thead>
               <Tr>
                 <Th>#</Th>
@@ -56,7 +58,14 @@ const Settngs: React.FC<Props> = () => {
                     <Td>{channel.title}</Td>
                     <Td>{id}</Td>
                     <Td>
-                      <Button size="xs" colorScheme="red">
+                      <Button
+                        size="xs"
+                        colorScheme="red"
+                        onClick={() => {
+                          deleteChannel(id)
+                          setChannels(getChannels())
+                        }}
+                      >
                         delete
                       </Button>
                     </Td>
@@ -66,7 +75,6 @@ const Settngs: React.FC<Props> = () => {
             </Tbody>
           </Table>
         </Card>
-        <NewChannel />
       </Stack>
     </div>
   )

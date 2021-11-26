@@ -1,0 +1,12 @@
+appId: com.xencodes.wordblock
+productName: Wordblock
+copyright: Copyright © 2021 XenCodes
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - from: .
+    filter:
+      - package.json
+      - app
+publish: null

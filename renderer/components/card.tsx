@@ -20,7 +20,7 @@ const Card: React.FC<Props> = ({
       <Flex alignItems="center">
         <Box
           p={3}
-          fontSize="3xl"
+          fontSize="xl"
           bg="green.100"
           textColor="green.500"
           rounded="lg"
@@ -28,7 +28,7 @@ const Card: React.FC<Props> = ({
           {icon}
         </Box>
         <Box ml={2}>
-          <Heading size="md" fontWeight="semibold">
+          <Heading size="sm" fontWeight="semibold">
             {title}
           </Heading>
           <Text color="gray.400">{description}</Text>
