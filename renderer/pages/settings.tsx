@@ -62,7 +62,7 @@ const Settngs: NextPage = () => {
   return (
     <div>
       <Heading>Settings</Heading>
-      <Stack mt={8} spacing={4}>
+      <Stack mt={8} spacing={8}>
         <Card
           icon={<FiBell />}
           title="Channels"
