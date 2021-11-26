@@ -53,7 +53,7 @@ const Settngs: NextPage = () => {
               {channelKeys.map((id, idx) => {
                 const channel: any = channels[id]
                 return (
-                  <Tr>
+                  <Tr key={idx}>
                     <Td>{idx + 1}</Td>
                     <Td>{channel.title}</Td>
                     <Td>{id}</Td>

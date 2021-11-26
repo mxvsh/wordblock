@@ -29,7 +29,7 @@ const Sidebar = () => {
         const active = pathname === path
 
         return (
-          <Link key={idx} href={`${path}`}>
+          <Link passHref key={idx} href={`${path}`}>
             <HStack
               p={2}
               cursor="pointer"
