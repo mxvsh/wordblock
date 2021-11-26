@@ -10,7 +10,15 @@ const Layout: React.FC = ({ children }) => {
 
       <Box maxW="3xl" m="0 auto">
         <Flex px={2} alignItems="flex-start" my={2}>
-          <Box w="64" bg="white" px={4} py={6} rounded="lg">
+          <Box
+            w="64"
+            bg="white"
+            px={4}
+            py={6}
+            rounded="lg"
+            position="sticky"
+            top="4"
+          >
             <Sidebar />
           </Box>
 
