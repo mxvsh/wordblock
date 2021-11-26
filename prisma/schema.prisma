@@ -3,11 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Channel {
-  id         Int    @id @default(autoincrement())
-  channel_Id String
+  id        Int    @id @default(autoincrement())
+  channelId String
+  title     String
+  members   Int
+  settings  Json
 }

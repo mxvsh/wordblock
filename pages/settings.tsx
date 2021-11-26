@@ -19,7 +19,7 @@ function Settngs({
         >
           {data.map(channel => (
             <Text textAlign="center" key={channel.id}>
-              {channel.channel_Id}
+              {channel.channelId}
             </Text>
           ))}
 

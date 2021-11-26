@@ -16,23 +16,23 @@ import { useState } from "react"
 
 export type ChannalProps = {
   id: string | number
-  channel_Id: string
+  channelId: string
 }
 
 const NewChannel: React.FC = () => {
-  const [channel_Id, setchael_Id] = useState("")
+  const [channelId, setchael_Id] = useState("")
   // modal
   const { isOpen, onOpen, onClose } = useDisclosure()
   const submitData = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     try {
-      const body = { channel_Id }
-      await fetch(`http://localhost:3000/api/channels/add`, {
+      const body = { channelId }
+      await fetch(`/api/channels/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       })
-      if (!channel_Id) return
+      if (!channelId) return
       setchael_Id("")
     } catch (error) {
       console.error(error)
@@ -55,7 +55,7 @@ const NewChannel: React.FC = () => {
                   autoFocus
                   onChange={e => setchael_Id(e.target.value)}
                   type="text"
-                  value={channel_Id}
+                  value={channelId}
                   placeholder="Enter Channel ID"
                 />
               </form>

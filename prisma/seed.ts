@@ -4,16 +4,16 @@ const prisma = new PrismaClient()
 
 const channelData: Prisma.ChannelCreateInput[] = [
   {
-    channel_Id: "12343frfr435545",
+    channelId: "12343frfr435545",
   },
   {
-    channel_Id: "1234rfrf3435545",
+    channelId: "1234rfrf3435545",
   },
   {
-    channel_Id: "123434rfrf35545",
+    channelId: "123434rfrf35545",
   },
   {
-    channel_Id: "12ffrf45",
+    channelId: "12ffrf45",
   },
 ]
 
