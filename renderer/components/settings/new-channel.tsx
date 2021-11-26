@@ -13,6 +13,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react"
+import { bot } from "../../lib/bot"
 
 export type NewChannelProps = {
   onAdd: () => void
@@ -30,32 +31,31 @@ const NewChannel: React.FC<NewChannelProps> = ({ onAdd }) => {
     const id = channelInputRef.current?.value
     channels = JSON.parse(channels || "{}")
 
-    fetch(`/api/channel/info?id=${id}`)
-      .then(res => res.json())
-      .then(data => {
-        setLoading(false)
-        if (data.error) {
-          toast({
-            title: "Error",
-            description: data.error,
-            status: "error",
-            position: "bottom-right",
-          })
-          return
-        }
+    try {
+      const info = await bot.telegram.getChat(Number(id))
+      const title = info["title"]
 
-        const { id, title } = data
-        toast({
-          title: "Success",
-          description: `${title} added`,
-          status: "success",
-          position: "bottom-right",
-        })
-        channels[id] = { ...data }
-        localStorage.setItem("channels", JSON.stringify(channels))
-        onAdd()
-        onClose()
+      toast({
+        title: "Success",
+        description: `${title} added`,
+        status: "success",
+        position: "bottom-right",
       })
+
+      channels[id] = { ...info }
+      localStorage.setItem("channels", JSON.stringify(channels))
+
+      onAdd()
+      onClose()
+    } catch (e) {
+      toast({
+        title: "Error",
+        description: e.message,
+        status: "error",
+        position: "bottom-right",
+      })
+      return
+    }
   }
 
   return (

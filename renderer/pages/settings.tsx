@@ -1,5 +1,5 @@
 import { NextPage } from "next"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import {
   Heading,
   Stack,
@@ -11,26 +11,58 @@ import {
   Tr,
   Th,
   Td,
+  Input,
+  Flex,
+  useToast,
 } from "@chakra-ui/react"
-
-import { FiBell } from "react-icons/fi"
+import { Telegraf } from "telegraf"
+import { FiBell, FiBookOpen } from "react-icons/fi"
 import { deleteChannel, getChannels } from "../helpers/channels"
 
 import Card from "../components/card"
 import NewChannel from "../components/settings/new-channel"
 
 const Settngs: NextPage = () => {
+  const toast = useToast()
   const [channels, setChannels] = useState({})
+  const [loading, setLoading] = useState({ botToken: false })
+  const botTokenRef = useRef<HTMLInputElement>(null)
   const channelKeys = useMemo(() => Object.keys(channels || {}), [channels])
 
   useEffect(() => {
     setChannels(getChannels())
+    botTokenRef.current?.setAttribute(
+      "value",
+      localStorage.getItem("botToken") || ""
+    )
   }, [])
+
+  const UpdateBotToken = () => {
+    const botToken = botTokenRef.current?.value
+    setLoading({ ...loading, botToken: true })
+
+    const bot = new Telegraf(botToken)
+    bot.telegram
+      .getMe()
+      .then(info => {
+        toast({ description: "Updated " + info.first_name, status: "success" })
+        localStorage.setItem("botToken", botToken)
+        setLoading({ ...loading, botToken: false })
+      })
+      .catch(err => {
+        toast({
+          description: err.message,
+          status: "error",
+        })
+
+        setLoading({ ...loading, botToken: false })
+      })
+  }
 
   return (
     <div>
       <Heading>Settings</Heading>
-      <Stack mt={8}>
+      <Stack mt={8} spacing={4}>
         <Card
           icon={<FiBell />}
           title="Channels"
@@ -74,6 +106,27 @@ const Settngs: NextPage = () => {
               })}
             </Tbody>
           </Table>
+        </Card>
+        <Card
+          color="red"
+          icon={<FiBookOpen />}
+          title="Bot Token"
+          description="Set or update bot token"
+        >
+          <Flex>
+            <Input
+              ref={botTokenRef}
+              roundedRight="none"
+              placeholder="Enter bot token"
+            />
+            <Button
+              isLoading={loading.botToken}
+              roundedLeft="none"
+              onClick={UpdateBotToken}
+            >
+              Update
+            </Button>
+          </Flex>
         </Card>
       </Stack>
     </div>

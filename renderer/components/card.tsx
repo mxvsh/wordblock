@@ -6,6 +6,7 @@ type Props = {
   title: string
   description: string
   extras?: React.ReactElement
+  color?: string
 }
 
 const Card: React.FC<Props> = ({
@@ -14,6 +15,7 @@ const Card: React.FC<Props> = ({
   icon,
   extras,
   children,
+  color = "orange",
 }) => {
   return (
     <Box>
@@ -21,8 +23,8 @@ const Card: React.FC<Props> = ({
         <Box
           p={3}
           fontSize="xl"
-          bg="green.100"
-          textColor="green.500"
+          bg={`${color}.100`}
+          textColor={`${color}.500`}
           rounded="lg"
         >
           {icon}
