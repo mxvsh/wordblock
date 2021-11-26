@@ -48,6 +48,7 @@ const NewChannel: React.FC<NewChannelProps> = ({ onAdd }) => {
       onAdd()
       onClose()
     } catch (e) {
+      setLoading(false)
       toast({
         title: "Error",
         description: e.message,

@@ -1,3 +1,8 @@
 import { Telegraf } from "telegraf"
 
-export const bot = new Telegraf(localStorage.getItem("botToken"))
+let bot
+if (process.browser) {
+  bot = new Telegraf(localStorage.getItem("botToken"))
+}
+
+export { bot }
